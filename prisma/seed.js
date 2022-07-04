@@ -16,27 +16,7 @@ async function seed() {
 	const user = await prisma.user.create({
 		data: {
 			email,
-			password: {
-				create: {
-					hash: hashedPassword,
-				},
-			},
-		},
-	})
-
-	await prisma.note.create({
-		data: {
-			title: 'My first note',
-			body: 'Hello, world!',
-			userId: user.id,
-		},
-	})
-
-	await prisma.note.create({
-		data: {
-			title: 'My second note',
-			body: 'Hello, world!',
-			userId: user.id,
+			password: hashedPassword,
 		},
 	})
 
