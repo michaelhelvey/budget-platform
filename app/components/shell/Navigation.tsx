@@ -1,5 +1,5 @@
+import { Popover } from '@headlessui/react'
 import { Link } from '@remix-run/react'
-import { useState } from 'react'
 import { LogoIcon } from '../icons/Logo'
 import { MenuIcon } from '../icons/Menu'
 import { TimesIcon } from '../icons/Times'
@@ -50,8 +50,6 @@ const navigationLinks: NavigationLinksSpec = {
 }
 
 export function SiteNavigation() {
-	const [showMenu, setMenuShowing] = useState(false)
-
 	return (
 		<nav className="relative flex w-full items-center justify-center py-8">
 			<div className="flex w-full max-w-6xl items-center justify-between">
@@ -89,42 +87,39 @@ export function SiteNavigation() {
 					))}
 				</ul>
 
-				<div className="mr-4 md:hidden">
-					<button
-						onClick={() => setMenuShowing((x) => !x)}
-						className="relative z-10"
-						aria-expanded={showMenu}
-						aria-label="Toggle Navigation"
-					>
-						{showMenu ? <TimesIcon /> : <MenuIcon />}
-					</button>
-					{showMenu ? (
-						<div>
-							<div className="fixed inset-0 bg-slate-300/50" />
-							<div className="absolute inset-x-0 mt-4 flex flex-col rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-500/5">
-								{navigationLinks.main.map((link) => (
-									<Link
-										to={link.to}
-										className={link.styles.mobile}
-										key={link.to.toString()}
-									>
-										{link.text}
-									</Link>
-								))}
-								<div className="my-2 border-t-2 border-slate-100" />
-								{navigationLinks.account.map((link) => (
-									<Link
-										to={link.to}
-										className={link.styles.mobile}
-										key={link.to.toString()}
-									>
-										{link.text}
-									</Link>
-								))}
-							</div>
-						</div>
-					) : null}
-				</div>
+				<Popover className="mr-4 md:hidden">
+					{({ open }) => (
+						<>
+							<Popover.Button className="relative z-10">
+								{open ? <TimesIcon /> : <MenuIcon />}
+							</Popover.Button>
+							<Popover.Panel>
+								<Popover.Overlay className="fixed inset-0 bg-slate-300/50" />
+								<div className="absolute inset-x-0 mt-4 flex flex-col rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-500/5">
+									{navigationLinks.main.map((link) => (
+										<Link
+											to={link.to}
+											className={link.styles.mobile}
+											key={link.to.toString()}
+										>
+											{link.text}
+										</Link>
+									))}
+									<div className="my-2 border-t-2 border-slate-100" />
+									{navigationLinks.account.map((link) => (
+										<Link
+											to={link.to}
+											className={link.styles.mobile}
+											key={link.to.toString()}
+										>
+											{link.text}
+										</Link>
+									))}
+								</div>
+							</Popover.Panel>
+						</>
+					)}
+				</Popover>
 			</div>
 		</nav>
 	)
