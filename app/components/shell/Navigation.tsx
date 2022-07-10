@@ -1,5 +1,7 @@
 import { Popover } from '@headlessui/react'
+import { User } from '@prisma/client'
 import { Link } from '@remix-run/react'
+import { useOptionalUser } from '~/utils'
 import { LogoIcon } from '../icons/Logo'
 import { MenuIcon } from '../icons/Menu'
 import { TimesIcon } from '../icons/Times'
@@ -15,7 +17,7 @@ type PropTypes<T extends React.ExoticComponent<any> | React.Component<any>> =
 		: never
 
 type NavigationLinksSpec = {
-	[key in 'main' | 'account']: Array<
+	[key in 'main' | 'account_loggedin' | 'account_loggedout']: Array<
 		PropTypes<typeof Link> & {
 			text: string
 			styles: { mobile: string; desktop: string }
@@ -31,7 +33,7 @@ const navigationLinks: NavigationLinksSpec = {
 			text: 'About',
 		},
 	],
-	account: [
+	account_loggedout: [
 		{
 			to: '/login',
 			styles: { desktop: mainNavLinkStyles, mobile: mobileNavLinkStyles },
@@ -47,9 +49,26 @@ const navigationLinks: NavigationLinksSpec = {
 			text: 'Create Account',
 		},
 	],
+	account_loggedin: [
+		{
+			to: '/logout',
+			styles: { desktop: mainNavLinkStyles, mobile: mobileNavLinkStyles },
+			text: 'Log Out',
+		},
+	],
+}
+
+// Given a user object, returns the list of links that the user should see in
+// the "Account" section of their navigation
+function getAccountLinks(user: User | undefined) {
+	if (user) {
+		return navigationLinks.account_loggedin
+	}
+	return navigationLinks.account_loggedout
 }
 
 export function SiteNavigation() {
+	const user = useOptionalUser()
 	return (
 		<nav className="relative flex w-full items-center justify-center py-8 px-4">
 			<div className="flex w-full max-w-6xl items-center justify-between">
@@ -74,7 +93,7 @@ export function SiteNavigation() {
 				</ul>
 
 				<ul className="hidden items-center space-x-4 md:flex">
-					{navigationLinks.account.map((link) => (
+					{getAccountLinks(user).map((link) => (
 						<li key={link.to.toString()}>
 							<Link
 								to={link.to}
@@ -106,7 +125,7 @@ export function SiteNavigation() {
 										</Link>
 									))}
 									<div className="my-2 border-t-2 border-slate-100" />
-									{navigationLinks.account.map((link) => (
+									{getAccountLinks(user).map((link) => (
 										<Link
 											to={link.to}
 											className={link.styles.mobile}
