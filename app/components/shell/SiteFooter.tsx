@@ -12,7 +12,7 @@ export function SiteFooter({
 	showNavigation?: boolean
 }) {
 	return (
-		<footer>
+		<footer className="w-full">
 			{showNavigation ? (
 				<div className="flex flex-col items-center justify-center py-12">
 					<div className="flex items-center">

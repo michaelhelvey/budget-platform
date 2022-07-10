@@ -51,7 +51,7 @@ const navigationLinks: NavigationLinksSpec = {
 
 export function SiteNavigation() {
 	return (
-		<nav className="relative flex w-full items-center justify-center py-8">
+		<nav className="relative flex w-full items-center justify-center py-8 px-4">
 			<div className="flex w-full max-w-6xl items-center justify-between">
 				<ul id="left-nav-container" className="flex items-center space-x-6">
 					<li>
