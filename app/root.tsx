@@ -48,7 +48,7 @@ export default function App() {
 				<Links />
 			</head>
 			<body className="h-full">
-				<main className="flex h-full flex-col bg-white px-6">
+				<main className="flex h-full flex-col bg-white">
 					<SiteNavigation />
 					<div className="flex-1">
 						<Outlet />
