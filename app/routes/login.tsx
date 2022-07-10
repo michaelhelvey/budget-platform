@@ -4,16 +4,18 @@ import type {
 	MetaFunction,
 } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
-import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
+import { Form, useActionData, useSearchParams } from '@remix-run/react'
 import * as React from 'react'
 
-import { createUserSession, getUserId } from '~/session.server'
 import { verifyLogin } from '~/models/user.server'
+import { createUserSession, getUserId } from '~/session.server'
 import { safeRedirect, validateEmail } from '~/utils'
+
+const DEFAULT_LOGIN_REDIRECT = '/dashboard'
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const userId = await getUserId(request)
-	if (userId) return redirect('/')
+	if (userId) return redirect(DEFAULT_LOGIN_REDIRECT)
 	return json({})
 }
 
@@ -28,7 +30,10 @@ export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
 	const email = formData.get('email')
 	const password = formData.get('password')
-	const redirectTo = safeRedirect(formData.get('redirectTo'), '/notes')
+	const redirectTo = safeRedirect(
+		formData.get('redirectTo'),
+		DEFAULT_LOGIN_REDIRECT
+	)
 	const remember = formData.get('remember')
 
 	if (!validateEmail(email)) {
@@ -41,13 +46,6 @@ export const action: ActionFunction = async ({ request }) => {
 	if (typeof password !== 'string' || password.length === 0) {
 		return json<ActionData>(
 			{ errors: { password: 'Password is required' } },
-			{ status: 400 }
-		)
-	}
-
-	if (password.length < 8) {
-		return json<ActionData>(
-			{ errors: { password: 'Password is too short' } },
 			{ status: 400 }
 		)
 	}
@@ -77,7 +75,7 @@ export const meta: MetaFunction = () => {
 
 export default function LoginPage() {
 	const [searchParams] = useSearchParams()
-	const redirectTo = searchParams.get('redirectTo') || '/'
+	const redirectTo = searchParams.get('redirectTo') || DEFAULT_LOGIN_REDIRECT
 	const actionData = useActionData() as ActionData
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
@@ -151,7 +149,7 @@ export default function LoginPage() {
 					<input type="hidden" name="redirectTo" value={redirectTo} />
 					<button
 						type="submit"
-						className="w-full rounded bg-blue-500  py-2 px-4 text-white hover:bg-blue-600 focus:bg-blue-400"
+						className="w-full rounded bg-blue-600  py-2 px-4 text-white hover:bg-blue-700 focus:bg-blue-500"
 					>
 						Log in
 					</button>
@@ -170,7 +168,7 @@ export default function LoginPage() {
 								Remember me
 							</label>
 						</div>
-						<div className="text-center text-sm text-gray-500">
+						{/*<div className="text-center text-sm text-gray-500">
 							Don't have an account?{' '}
 							<Link
 								className="text-blue-500 underline"
@@ -181,7 +179,7 @@ export default function LoginPage() {
 							>
 								Sign up
 							</Link>
-						</div>
+							</div> */}
 					</div>
 				</Form>
 			</div>
