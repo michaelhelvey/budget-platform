@@ -7,20 +7,21 @@ export const action: ActionFunction = async ({ request }) => {
 	return logout(request)
 }
 
-/*
-export const loader: LoaderFunction = async ({ request }) => {
-	return redirect('/')
-}
-*/
-
 export default function LogOut() {
 	return (
-		<div>
-			<h1>Log Out</h1>
-			<p>Are you sure you want to log out!</p>
-			<Form method="post">
-				<button type="submit">Yes, get me out.</button>
-			</Form>
+		<div className="flex w-full flex-col items-center">
+			<div className="w-full max-w-6xl">
+				<h1 className="text-2xl font-bold text-blue-700">Log Out</h1>
+				<p className="mt-4 text-slate-800">Are you sure you want to log out!</p>
+				<Form method="post">
+					<button
+						type="submit"
+						className="mt-4 rounded bg-blue-600 px-3 py-2 text-sm font-bold text-white"
+					>
+						Log Out
+					</button>
+				</Form>
+			</div>
 		</div>
 	)
 }
