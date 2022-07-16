@@ -26,8 +26,17 @@ declare global {
 			 *    cy.cleanupUser({ email: 'whatever@example.com' })
 			 */
 			cleanupUser: typeof cleanupUser
+			createUser: typeof createUser
 		}
 	}
+}
+
+function createUser({ email, password }: { email: string; password: string }) {
+	cy.then(() => ({ email, password })).as('user')
+	cy.exec(
+		`npx ts-node --require tsconfig-paths/register ./cypress/support/create-user.ts "${email}" "${password}"`
+	)
+	return cy.get('@user')
 }
 
 function login({
@@ -69,6 +78,7 @@ function deleteUserByEmail(email: string) {
 }
 
 Cypress.Commands.add('login', login)
+Cypress.Commands.add('createUser', createUser)
 Cypress.Commands.add('cleanupUser', cleanupUser)
 
 /*

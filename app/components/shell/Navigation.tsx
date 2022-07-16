@@ -78,9 +78,9 @@ export function SiteNavigation() {
 							<div className="h-8 w-8">
 								<LogoIcon className="text-blue-600" />
 							</div>
-							<h1 className="ml-3 text-lg font-bold text-slate-900">
+							<div className="ml-3 text-lg font-bold text-slate-900">
 								Simple<span className="text-blue-600">Budget</span>
-							</h1>
+							</div>
 						</Link>
 					</li>
 					{navigationLinks.main.map((link) => (
