@@ -3,7 +3,7 @@ describe('smoke tests', () => {
 		cy.cleanupUser()
 	})
 
-	it('auth: login', () => {
+	it('given a user with an email and password, they can log in and view their dashboard', () => {
 		const loginForm = {
 			email: 'michael@example.com',
 			password: '1234',
@@ -37,5 +37,17 @@ describe('smoke tests', () => {
 		cy.findByRole('heading')
 			.invoke('text')
 			.should('match', /welcome to your dashboard/i)
+	})
+
+	it('given a logged in user, they can click log out to log out', () => {
+		cy.login()
+
+		cy.visit('/dashboard')
+
+		cy.findByRole('link', { name: /log out/i }).click()
+		cy.findByText(/are you sure you want to log out?/i)
+
+		cy.findByRole('button', { name: /log out/i }).click()
+		cy.location('pathname').should('eq', '/')
 	})
 })

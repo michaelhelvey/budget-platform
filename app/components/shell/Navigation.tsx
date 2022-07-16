@@ -114,7 +114,7 @@ export function SiteNavigation() {
 							</Popover.Button>
 							<Popover.Panel>
 								<Popover.Overlay className="fixed inset-0 bg-slate-300/50" />
-								<div className="absolute inset-x-0 mt-4 flex flex-col rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-500/5">
+								<div className="absolute inset-x-0 mx-4 mt-4 flex flex-col rounded-xl bg-white p-4 shadow-xl ring-1 ring-slate-500/5">
 									{navigationLinks.main.map((link) => (
 										<Link
 											to={link.to}
