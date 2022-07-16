@@ -47,7 +47,27 @@
 	"commitlint": {
 		"extends": [
 			"@commitlint/config-conventional"
-		]
+		],
+		"rules": {
+			"type-enum": [
+				2,
+				"always",
+				[
+					"build",
+					"chore",
+					"ci",
+					"docs",
+					"feat",
+					"fix",
+					"perf",
+					"refactor",
+					"revert",
+					"style",
+					"test",
+					"wip"
+				]
+			]
+		}
 	},
 	"dependencies": {
 		"@headlessui/react": "^1.6.6",
@@ -59,7 +79,8 @@
 		"bcryptjs": "^2.4.3",
 		"react": "^17.0.2",
 		"react-dom": "^17.0.2",
-		"tiny-invariant": "^1.2.0"
+		"tiny-invariant": "^1.2.0",
+		"zod": "^3.17.3"
 	},
 	"devDependencies": {
 		"@commitlint/cli": "^17.0.3",
@@ -97,6 +118,7 @@
 		"start-server-and-test": "^1.14.0",
 		"tailwindcss": "^3.1.0",
 		"ts-node": "^10.8.1",
+		"ts-toolbelt": "^9.6.0",
 		"tsconfig-paths": "^4.0.0",
 		"typescript": "^4.7.3",
 		"vite": "^2.9.10",
