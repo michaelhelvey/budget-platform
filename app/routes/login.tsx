@@ -7,9 +7,9 @@ import { json, redirect } from '@remix-run/node'
 import { Form, useActionData, useSearchParams } from '@remix-run/react'
 import * as React from 'react'
 
+import { createUserSession, getUserId } from '~/lib/session.server'
+import { safeRedirect, validateEmail } from '~/lib/utils'
 import { verifyLogin } from '~/models/user.server'
-import { createUserSession, getUserId } from '~/session.server'
-import { safeRedirect, validateEmail } from '~/utils'
 
 const DEFAULT_LOGIN_REDIRECT = '/dashboard'
 

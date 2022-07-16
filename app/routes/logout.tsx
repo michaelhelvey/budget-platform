@@ -1,7 +1,7 @@
 import type { ActionFunction } from '@remix-run/node'
 import { Form } from '@remix-run/react'
 
-import { logout } from '~/session.server'
+import { logout } from '~/lib/session.server'
 
 export const action: ActionFunction = async ({ request }) => {
 	return logout(request)

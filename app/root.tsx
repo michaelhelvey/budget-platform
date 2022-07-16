@@ -17,7 +17,7 @@ import {
 import { SiteNavigation } from './components/shell/Navigation'
 import { SiteFooter } from './components/shell/SiteFooter'
 
-import { getUser } from './session.server'
+import { getUser } from './lib/session.server'
 import tailwindStylesheetUrl from './styles/tailwind.css'
 
 export const links: LinksFunction = () => {

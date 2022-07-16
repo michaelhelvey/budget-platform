@@ -1,6 +1,6 @@
 import type { LoaderFunction } from '@remix-run/server-runtime'
-import { requireUser } from '~/session.server'
-import { useUser } from '~/utils'
+import { requireUser } from '~/lib/session.server'
+import { useUser } from '~/lib/utils'
 
 export const loader: LoaderFunction = async ({ request }) => {
 	await requireUser(request)
