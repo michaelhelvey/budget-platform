@@ -43,7 +43,10 @@ export default function Index() {
 							</p>
 						</div>
 						<div>
-							<img src="/images/github_repo_screenshot.png" />
+							<img
+								src="/images/github_repo_screenshot.png"
+								alt="Screenshot of SimpleBudget Github repository"
+							/>
 						</div>
 					</div>
 				</div>

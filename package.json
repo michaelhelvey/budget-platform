@@ -37,7 +37,12 @@
 		"/public/build"
 	],
 	"lint-staged": {
-		"**/*": "prettier --write --ignore-unknown"
+		"**/*": [
+			"prettier --write --ignore-unknown"
+		],
+		"**/*.{ts,tsx,js,jsx}": [
+			"eslint --fix --max-warnings=0"
+		]
 	},
 	"commitlint": {
 		"extends": [
