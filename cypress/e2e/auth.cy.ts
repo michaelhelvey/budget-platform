@@ -1,11 +1,11 @@
-describe('smoke tests', () => {
+describe('Auth tests', () => {
 	afterEach(() => {
 		cy.cleanupUser()
 	})
 
 	it('given a user with an email and password, they can log in and view their dashboard', () => {
 		const loginForm = {
-			email: 'michael@example.com',
+			email: 'rupert@example.com',
 			password: '1234',
 		}
 
