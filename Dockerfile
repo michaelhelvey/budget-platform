@@ -22,7 +22,8 @@ WORKDIR /myapp
 
 COPY --from=deps /myapp/node_modules /myapp/node_modules
 ADD package.json package-lock.json ./
-RUN npm prune --production
+# TODO(production deploy): enable this again (for now, I want to be able to include dev deps in prod)
+# RUN npm prune --production
 
 # Build the app
 FROM base as build
