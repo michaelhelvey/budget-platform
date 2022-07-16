@@ -1,5 +1,5 @@
 import { Popover } from '@headlessui/react'
-import { User } from '@prisma/client'
+import type { User } from '@prisma/client'
 import { Link } from '@remix-run/react'
 import { useOptionalUser } from '~/utils'
 import { LogoIcon } from '../icons/Logo'
