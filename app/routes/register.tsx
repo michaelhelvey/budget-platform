@@ -27,6 +27,7 @@ interface ActionData {
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
+
 	const email = formData.get('email')
 	const password = formData.get('password')
 	const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
@@ -60,7 +61,12 @@ export const action: ActionFunction = async ({ request }) => {
 		)
 	}
 
-	const user = await createUser(email, password)
+	const user = await createUser({
+		email,
+		password,
+		firstName: '',
+		lastName: '',
+	})
 
 	return createUserSession({
 		request,
@@ -72,11 +78,11 @@ export const action: ActionFunction = async ({ request }) => {
 
 export const meta: MetaFunction = () => {
 	return {
-		title: 'Sign Up',
+		title: 'Create Account',
 	}
 }
 
-export default function Join() {
+export default function CreateAccount() {
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo') ?? undefined
 	const actionData = useActionData() as ActionData
