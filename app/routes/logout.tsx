@@ -9,7 +9,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function LogOut() {
 	return (
-		<div className="flex w-full flex-col items-center">
+		<div className="flex w-full flex-col items-center px-8">
 			<div className="w-full max-w-6xl">
 				<h1 className="text-2xl font-bold text-blue-700">Log Out</h1>
 				<p className="mt-4 text-slate-800">Are you sure you want to log out?</p>
