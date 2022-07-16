@@ -12,7 +12,7 @@ export default function LogOut() {
 		<div className="flex w-full flex-col items-center">
 			<div className="w-full max-w-6xl">
 				<h1 className="text-2xl font-bold text-blue-700">Log Out</h1>
-				<p className="mt-4 text-slate-800">Are you sure you want to log out!</p>
+				<p className="mt-4 text-slate-800">Are you sure you want to log out?</p>
 				<Form method="post">
 					<button
 						type="submit"
