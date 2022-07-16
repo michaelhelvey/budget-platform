@@ -1,24 +1,41 @@
-import { faker } from '@faker-js/faker'
-
 describe('smoke tests', () => {
 	afterEach(() => {
 		cy.cleanupUser()
 	})
 
-	it('should allow you to login', () => {
+	it('auth: login', () => {
 		const loginForm = {
-			email: `${faker.internet.userName()}@example.com`,
-			password: faker.internet.password(),
+			email: 'michael@example.com',
+			password: '1234',
 		}
-		cy.then(() => ({ email: loginForm.email })).as('user')
+
+		cy.createUser(loginForm)
 
 		cy.visit('/')
 		cy.findByRole('link', { name: /log in/i }).click()
 
-		cy.findByRole('textbox', { name: /email/i }).type(loginForm.email)
-		cy.findByLabelText(/password/i).type(loginForm.password)
-		cy.findByRole('button', { name: /log in/i }).click()
+		const $email = () => cy.findByRole('textbox', { name: /email/i })
+		const $password = () => cy.findByLabelText(/password/i)
+		const $submit = () => cy.findByRole('button', { name: /log in/i })
 
-		cy.findByText(/welcome to your dashboard/)
+		// When the user types in wrong information, they should get an error
+		// message:
+		$email().type('somethingrandom@wrong.com')
+		$password().type(loginForm.password)
+
+		$submit().click()
+		cy.findByText(/invalid email or password/i)
+
+		// But when the user is correct, they should be logged in and taken to their
+		// dashboard:
+		$email().clear()
+		$email().type(loginForm.email)
+		$password().clear()
+		$password().type(loginForm.password)
+		$submit().click()
+
+		cy.findByRole('heading')
+			.invoke('text')
+			.should('match', /welcome to your dashboard/i)
 	})
 })

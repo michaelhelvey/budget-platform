@@ -4,14 +4,14 @@
 // and it will log out the cookie value you can use to interact with the server
 // as that new user.
 
-import { parse } from 'cookie'
 import { installGlobals } from '@remix-run/node'
-import { createUserSession } from '~/session.server'
+import { parse } from 'cookie'
 import { createUser } from '~/models/user.server'
+import { createUserSession } from '~/session.server'
 
 installGlobals()
 
-async function createAndLogin(email: string) {
+async function createAndLogin(email: string, password?: string) {
 	if (!email) {
 		throw new Error('email required for login')
 	}
@@ -19,7 +19,7 @@ async function createAndLogin(email: string) {
 		throw new Error('All test emails must end in @example.com')
 	}
 
-	const user = await createUser(email, 'myreallystrongpassword')
+	const user = await createUser(email, password || 'myreallystrongpassword')
 
 	const response = await createUserSession({
 		request: new Request('test://test'),
@@ -44,4 +44,4 @@ async function createAndLogin(email: string) {
 	)
 }
 
-createAndLogin(process.argv[2])
+createAndLogin(process.argv[2], process.argv[3])

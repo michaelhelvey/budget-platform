@@ -10,5 +10,5 @@ export const loader: LoaderFunction = async ({ request }) => {
 export default function Dashboard() {
 	const user = useUser()
 
-	return <div>Welcome to your dashboard, {user.firstName}</div>
+	return <h1>Welcome to your dashboard, {user.firstName}</h1>
 }
