@@ -56,13 +56,7 @@ Prior to your first deployment, you'll need to do a few things:
   fly create <your app name>
   ```
 
-- Create a new [GitHub Repository](https://repo.new), and then add it as the remote for your project. **Do not push your app yet!**
-
-  ```sh
-  git remote add origin <ORIGIN_URL>
-  ```
-
-- Add a `FLY_API_TOKEN` to your GitHub repo. To do this, go to your user settings on Fly and create a new [token](https://web.fly.io/user/personal_access_tokens/new), then add it to [your repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with the name `FLY_API_TOKEN`.
+- Add a `FLY_API_TOKEN` to your GitHub repo (presumably the one you forked this repo into). To do this, go to your user settings on Fly and create a new [token](https://web.fly.io/user/personal_access_tokens/new), then add it to [your repo secrets](https://docs.github.com/en/actions/security-guides/encrypted-secrets) with the name `FLY_API_TOKEN`.
 
 - Add a `SESSION_SECRET` to your fly app secrets, to do this you can run the following commands:
 
@@ -126,3 +120,36 @@ This project uses ESLint for linting. That is configured in `.eslintrc.js`.
 ### Formatting
 
 We use [Prettier](https://prettier.io/) for auto-formatting in this project. It's recommended to install an editor plugin (like the [VSCode Prettier plugin](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)) to get auto-formatting on save. There's also a `npm run format` script you can run to format all files in the project.
+
+## Documentation
+
+Following is some notes and documentation related to how the software is intended to function.
+
+### User accounts
+
+When a user signs up, if they are not signing up in response to a invitation,
+then a new "Organization" will be created. Organizations contain users. If a
+user sends an invitation to another user, and that user creates an account, they
+will be automatically added to the organization to which they were invited.
+
+If a user signs up and there is no organization associated with that user, then
+they will be taken to a secondary screen after signing up where they can invite
+other users they want to share their account with.
+
+Budget settings and transactions are child objects of organizations. Any user
+in an organization can edit anything that any other user can -- at the moment,
+there is no such thing as "roles" -- invite users whom you trust.
+
+There is no email validation or transaction email set up. Therefore, you
+_could_ abuse the system by inviting a user to your own "dummy" organization,
+thus preventing them from subsequently creating an account with the email you
+sent the invitation to. However, since this software is intended to be deployed
+separately for each organization that wants to use it (in general), I don't
+think this will be an issue in practice.
+
+Obviously if I ever turn this into a proper SaaS model, then we'll need
+transactional email and proper roles and security, etc.
+
+## License
+
+[APGL 3.0](./LICENSE)
