@@ -75,7 +75,7 @@ function getAccountLinks(user: User | undefined) {
 export function SiteNavigation() {
 	const user = useOptionalUser()
 	return (
-		<nav className="relative flex w-full items-center justify-center py-8 px-4">
+		<nav className="relative flex w-full items-center justify-center py-4 px-4 shadow-sm md:py-8">
 			<div className="flex w-full max-w-6xl items-center justify-between">
 				<ul id="left-nav-container" className="flex items-center space-x-6">
 					<li>
@@ -111,7 +111,7 @@ export function SiteNavigation() {
 					))}
 				</ul>
 
-				<Popover className="mr-4 md:hidden">
+				<Popover className="mr-4 flex items-center justify-center md:hidden">
 					{({ open }) => (
 						<>
 							<Popover.Button className="relative z-10">

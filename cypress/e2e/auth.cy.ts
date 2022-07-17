@@ -35,9 +35,7 @@ describe('Login', () => {
 		$password().type(loginForm.password)
 		$submit().click()
 
-		cy.findByRole('heading')
-			.invoke('text')
-			.should('match', /welcome to your dashboard/i)
+		cy.location('pathname').should('eq', '/dashboard')
 	})
 
 	it('given a logged in user, they can click log out to log out', () => {
