@@ -38,7 +38,7 @@ export function SiteFooter({
 				</div>
 			) : null}
 			<div className="flex items-center justify-between border-t border-slate-100 py-6 px-6 text-sm text-slate-600">
-				<p>Built by Michael Helvey. (?TODO) MPL Licensed (?TODO)</p>
+				<p>Built by Michael Helvey. APGL Licensed.</p>
 				<div>
 					<a
 						href="https://github.com/michaelhelvey/budget-platform"

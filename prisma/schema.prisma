@@ -16,7 +16,7 @@ model User {
 
   UserInvitation UserInvitation[]
 
-  organization   Organization @relation(fields: [organizationId], references: [id])
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId String
 
   createdAt DateTime @default(now())
@@ -28,7 +28,7 @@ model UserInvitation {
   email  String @unique
   status String @default("PENDING")
 
-  from   User   @relation(fields: [userId], references: [id])
+  from   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 
   createdAt DateTime @default(now())
