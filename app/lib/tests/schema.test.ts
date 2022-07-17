@@ -1,5 +1,6 @@
+import type { SafeParseError } from 'zod'
 import { z } from 'zod'
-import { cast } from '../schema'
+import { cast, formError, mapZodError } from '../schema'
 
 describe('cast', () => {
 	it('given schema with string, passes string through', () => {
@@ -54,5 +55,29 @@ describe('cast', () => {
 		const val = '{ "hello'
 		const result = schema.parse({ foo: val })
 		expect(result.foo).toEqual(val)
+	})
+})
+
+describe('formError', () => {
+	it('given a field and an error, creates an errors object', () => {
+		const result = formError('email', 'the email is wrong')
+		expect(result).toMatchObject({ errors: { email: 'the email is wrong' } })
+	})
+})
+
+describe('mapZodError', () => {
+	it('given a failing zod schema, returns a dictionary of errors', () => {
+		const schema = z.object({
+			foo: z.string(),
+		})
+
+		const errorResult = schema.safeParse({ foo: 2 }) as SafeParseError<
+			z.input<typeof schema>
+		>
+
+		const mappedResult = mapZodError(errorResult.error)
+		expect(mappedResult).toMatchObject({
+			errors: { foo: 'Expected string, received number' },
+		})
 	})
 })

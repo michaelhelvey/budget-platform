@@ -4,11 +4,14 @@ import type {
 	MetaFunction,
 } from '@remix-run/node'
 import { json, redirect } from '@remix-run/node'
-import { Form, useActionData, useSearchParams } from '@remix-run/react'
+import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
 import * as React from 'react'
+import type { LoginValidationResponse } from '~/controllers/login.server'
+import { validateLoginForm } from '~/controllers/login.server'
+import { formError } from '~/lib/schema'
 
 import { createUserSession, getUserId } from '~/lib/session.server'
-import { safeRedirect, validateEmail } from '~/lib/utils'
+import { safeRedirect } from '~/lib/utils'
 import { verifyLogin } from '~/models/user.server'
 
 const DEFAULT_LOGIN_REDIRECT = '/dashboard'
@@ -19,44 +22,30 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json({})
 }
 
-interface ActionData {
-	errors?: {
-		email?: string
-		password?: string
-	}
-}
+type ActionData = Extract<LoginValidationResponse, { state: 'error' }>['error']
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
-	const email = formData.get('email')
-	const password = formData.get('password')
 	const redirectTo = safeRedirect(
 		formData.get('redirectTo'),
 		DEFAULT_LOGIN_REDIRECT
 	)
 	const remember = formData.get('remember')
 
-	if (!validateEmail(email)) {
-		return json<ActionData>(
-			{ errors: { email: 'Email is invalid' } },
-			{ status: 400 }
-		)
+	const validationResult = validateLoginForm(
+		Object.fromEntries(formData.entries())
+	)
+
+	if (validationResult.state === 'error') {
+		return json<ActionData>(validationResult.error)
 	}
 
-	if (typeof password !== 'string' || password.length === 0) {
-		return json<ActionData>(
-			{ errors: { password: 'Password is required' } },
-			{ status: 400 }
-		)
-	}
+	const { email, password } = validationResult.data
 
 	const user = await verifyLogin(email, password)
 
 	if (!user) {
-		return json<ActionData>(
-			{ errors: { email: 'Invalid email or password' } },
-			{ status: 400 }
-		)
+		return json<ActionData>(formError('email', 'Invalid email or password'))
 	}
 
 	return createUserSession({
@@ -76,7 +65,7 @@ export const meta: MetaFunction = () => {
 export default function LoginPage() {
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo') || DEFAULT_LOGIN_REDIRECT
-	const actionData = useActionData() as ActionData
+	const actionData = useActionData<ActionData>()
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
 
@@ -168,18 +157,18 @@ export default function LoginPage() {
 								Remember me
 							</label>
 						</div>
-						{/*<div className="text-center text-sm text-gray-500">
+						<div className="text-center text-sm text-gray-500">
 							Don't have an account?{' '}
 							<Link
 								className="text-blue-500 underline"
 								to={{
-									pathname: '/join',
+									pathname: '/register',
 									search: searchParams.toString(),
 								}}
 							>
 								Sign up
 							</Link>
-							</div> */}
+						</div>
 					</div>
 				</Form>
 			</div>
