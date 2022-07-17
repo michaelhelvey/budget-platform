@@ -38,7 +38,16 @@ export function SiteFooter({
 				</div>
 			) : null}
 			<div className="flex items-center justify-between border-t border-slate-100 py-6 px-6 text-sm text-slate-600">
-				<p>Built by Michael Helvey. APGL Licensed.</p>
+				<p>
+					Built by{' '}
+					<a
+						href="https://michaelhelvey.dev"
+						className="text-blue-700 underline visited:text-slate-700"
+					>
+						Michael Helvey
+					</a>
+					. APGL Licensed.
+				</p>
 				<div>
 					<a
 						href="https://github.com/michaelhelvey/budget-platform"

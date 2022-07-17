@@ -22,24 +22,46 @@ export default function Index() {
 					Get Started
 				</Link>
 			</section>
-			<section className="flex flex-col items-center bg-blue-600 bg-gradient-to-bl px-8 py-24 text-white">
+			<section className="flex flex-col items-center bg-slate-100 bg-gradient-to-bl px-8 py-24 text-slate-900">
 				<div className="w-full max-w-6xl">
-					<h2 className="text-center text-5xl font-medium">Lorem Ipsum</h2>
+					<h2 className="text-center text-5xl font-medium">How It Works</h2>
 					<p className="mt-8 text-center text-2xl">
-						Riveting subtext that explains the above in an even better way!
+						Reduce friction on recording transactions for common expenses
 					</p>
 					<div className="mt-12 grid w-full grid-cols-1 gap-10 md:grid-cols-2">
 						<div>
-							<p>
-								Totally open source. If you love writing Javascript and
-								debugging difficult to understand errors without any customer
-								support, you'll love this application.
+							<p className="leading-relaxed">
+								SimpleBudget isn't meant to be a replacement for Excel or your
+								favorite budgeting application. It's designed to lower the
+								friction of entering transactions for those common expenses that
+								you have every day -- utility bills, grocery, gas, etc. Use
+								SimpleBudget to track those expenses, then export in a variety
+								of formats to use however you like.
 							</p>
-							<p className="mt-3">
-								Lorem ipsum dolor, sit amet consectetur adipisicing elit. Neque
-								fugit omnis delectus maxime ullam corporis beatae, corrupti
-								voluptates eos ea consequatur minus ratione quod dolorem
-								blanditiis ad, qui, reprehenderit soluta.
+							<p className="mt-4 leading-relaxed">
+								SimpleBudget is an open source application designed to be
+								deployed on your own (though you're welcome to create an account
+								here to try it out). The project README includes detailed
+								instructions on how to deploy the project to{' '}
+								<a
+									className="text-blue-700 underline visited:text-slate-700"
+									href="https://fly.io"
+								>
+									Fly
+								</a>
+								, a popular cloud computing platform, and also includes a
+								Dockerfile for easy deployment wherever you like. Data is stored
+								in a local sqlite database for easy backups and manipulation.
+							</p>
+							<p className="mt-4 leading-relaxed">
+								If you want to add new features, you'll find a clean,
+								well-tested codebase readily available{' '}
+								<a
+									href="https://github.com/michaelhelvey/budget-platform"
+									className="text-blue-700 underline visited:text-slate-700"
+								>
+									on Github.
+								</a>
 							</p>
 						</div>
 						<div>
