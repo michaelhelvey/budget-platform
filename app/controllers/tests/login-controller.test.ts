@@ -1,8 +1,5 @@
-import type {
-	LoginValidationResponse} from '~/controllers/login.server';
-import {
-	validateLoginForm,
-} from '~/controllers/login.server'
+import type { LoginValidationResponse } from '~/controllers/login.server'
+import { validateLoginForm } from '~/controllers/login.server'
 
 describe('validateLoginForm', () => {
 	it('given a valid schema, returns data', () => {

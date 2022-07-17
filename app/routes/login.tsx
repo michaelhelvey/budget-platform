@@ -37,7 +37,7 @@ export const action: ActionFunction = async ({ request }) => {
 	)
 
 	if (validationResult.state === 'error') {
-		return json<ActionData>(validationResult.error)
+		return json<ActionData>(validationResult.error, { status: 400 })
 	}
 
 	const { email, password } = validationResult.data
@@ -45,7 +45,9 @@ export const action: ActionFunction = async ({ request }) => {
 	const user = await verifyLogin(email, password)
 
 	if (!user) {
-		return json<ActionData>(formError('email', 'Invalid email or password'))
+		return json<ActionData>(formError('email', 'Invalid email or password'), {
+			status: 400,
+		})
 	}
 
 	return createUserSession({

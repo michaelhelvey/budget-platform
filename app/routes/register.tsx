@@ -6,11 +6,15 @@ import type {
 import { json, redirect } from '@remix-run/node'
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react'
 import * as React from 'react'
+import type { RegisterValidationResponse } from '~/controllers/register.server'
+import {
+	onSuccessRegisterFormValidation,
+	validateRegisterForm,
+} from '~/controllers/register.server'
 
 import { createUserSession, getUserId } from '~/lib/session.server'
 
-import { safeRedirect, validateEmail } from '~/lib/utils'
-import { createUser, getUserByEmail } from '~/models/user.server'
+import { safeRedirect } from '~/lib/utils'
 
 export const loader: LoaderFunction = async ({ request }) => {
 	const userId = await getUserId(request)
@@ -18,55 +22,24 @@ export const loader: LoaderFunction = async ({ request }) => {
 	return json({})
 }
 
-interface ActionData {
-	errors: {
-		email?: string
-		password?: string
-	}
-}
+type ActionData = Extract<
+	RegisterValidationResponse,
+	{ state: 'error' }
+>['error']
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
-
-	const email = formData.get('email')
-	const password = formData.get('password')
 	const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
 
-	if (!validateEmail(email)) {
-		return json<ActionData>(
-			{ errors: { email: 'Email is invalid' } },
-			{ status: 400 }
-		)
+	const validationResult = await validateRegisterForm(
+		Object.fromEntries(formData.entries())
+	)
+
+	if (validationResult.state === 'error') {
+		return json<ActionData>(validationResult.error, { status: 400 })
 	}
 
-	if (typeof password !== 'string' || password.length === 0) {
-		return json<ActionData>(
-			{ errors: { password: 'Password is required' } },
-			{ status: 400 }
-		)
-	}
-
-	if (password.length < 8) {
-		return json<ActionData>(
-			{ errors: { password: 'Password is too short' } },
-			{ status: 400 }
-		)
-	}
-
-	const existingUser = await getUserByEmail(email)
-	if (existingUser) {
-		return json<ActionData>(
-			{ errors: { email: 'A user already exists with this email' } },
-			{ status: 400 }
-		)
-	}
-
-	const user = await createUser({
-		email,
-		password,
-		firstName: '',
-		lastName: '',
-	})
+	const user = await onSuccessRegisterFormValidation(validationResult.data)
 
 	return createUserSession({
 		request,
