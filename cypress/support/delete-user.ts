@@ -16,6 +16,14 @@ async function deleteUser(email: string) {
 		throw new Error('All test emails must end in @example.com')
 	}
 
+	const user = await prisma.user.findUnique({ where: { email } })
+
+	if (!user) {
+		console.log(`No user found for email ${email}.  Doing nothing.`)
+		return
+	}
+
+	await prisma.organization.delete({ where: { id: user.organizationId } })
 	await prisma.user.delete({ where: { email } })
 }
 

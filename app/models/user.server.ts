@@ -1,7 +1,8 @@
-import type { User } from '@prisma/client'
+import type { Organization, User } from '@prisma/client'
 import bcrypt from 'bcryptjs'
 
 import { prisma } from '~/lib/db.server'
+import { createOrganization } from './organization.server'
 
 export type { User } from '@prisma/client'
 
@@ -17,15 +18,39 @@ type CreateUserArgs = Pick<
 	User,
 	'firstName' | 'lastName' | 'email' | 'password'
 >
-export async function createUser(args: CreateUserArgs) {
+
+/**
+ * There are basically two flows for creating a user:
+ *
+ * 1) Create a new organization for the user, because they are creating their
+ * account independently (the default behavior),
+ *
+ * 2) Create the user with an organization specified (e.g. as the result of a
+ * user invitation)
+ */
+export async function createUser(
+	args: CreateUserArgs,
+	organization?: Organization
+) {
 	const hashedPassword = await bcrypt.hash(args.password, 10)
+
+	if (!organization) {
+		organization = await createOrganization(
+			userNameToOrgName(args.firstName, args.lastName)
+		)
+	}
 
 	return prisma.user.create({
 		data: {
 			...args,
 			password: hashedPassword,
+			organizationId: organization.id,
 		},
 	})
+}
+
+function userNameToOrgName(firstName: string, lastName: string): string {
+	return `${firstName} ${lastName}'s Family`
 }
 
 export async function deleteUserByEmail(email: User['email']) {

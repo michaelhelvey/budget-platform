@@ -15,17 +15,7 @@ declare global {
 			 */
 			login: typeof login
 
-			/**
-			 * Deletes the current @user
-			 *
-			 * @returns {typeof cleanupUser}
-			 * @memberof Chainable
-			 * @example
-			 *    cy.cleanupUser()
-			 * @example
-			 *    cy.cleanupUser({ email: 'whatever@example.com' })
-			 */
-			cleanupUser: typeof cleanupUser
+			cleanUpDatabase: typeof cleanUpDatabase
 			createUser: typeof createUser
 		}
 	}
@@ -56,20 +46,16 @@ function login({
 	return cy.get('@user')
 }
 
-function cleanupUser({ email }: { email?: string } = {}) {
-	if (email) {
-		deleteUserByEmail(email)
-	} else {
-		cy.get('@user').then((user) => {
-			const email = (user as { email?: string }).email
-			if (email) {
-				deleteUserByEmail(email)
-			}
-		})
-	}
+function cleanUpDatabase() {
+	cy.exec(
+		`npx ts-node --require tsconfig-paths/register ./cypress/support/clean-db.ts`
+	)
 	cy.clearCookie('__session')
 }
 
+// For future reference, if we ever need to add back specific user deleltion,
+// here's how we do it:
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function deleteUserByEmail(email: string) {
 	cy.exec(
 		`npx ts-node --require tsconfig-paths/register ./cypress/support/delete-user.ts "${email}"`
@@ -79,7 +65,7 @@ function deleteUserByEmail(email: string) {
 
 Cypress.Commands.add('login', login)
 Cypress.Commands.add('createUser', createUser)
-Cypress.Commands.add('cleanupUser', cleanupUser)
+Cypress.Commands.add('cleanUpDatabase', cleanUpDatabase)
 
 /*
 eslint

@@ -1,6 +1,6 @@
-describe('Auth tests', () => {
-	afterEach(() => {
-		cy.cleanupUser()
+describe('Login', () => {
+	beforeEach(() => {
+		cy.cleanUpDatabase()
 	})
 
 	it('given a user with an email and password, they can log in and view their dashboard', () => {
@@ -12,6 +12,7 @@ describe('Auth tests', () => {
 		cy.createUser(loginForm)
 
 		cy.visit('/')
+
 		cy.findByRole('link', { name: /log in/i }).click()
 
 		const $email = () => cy.findByRole('textbox', { name: /email/i })
@@ -49,5 +50,18 @@ describe('Auth tests', () => {
 
 		cy.findByRole('button', { name: /log out/i }).click()
 		cy.location('pathname').should('eq', '/')
+	})
+
+	// TODO: test linking between create account and log in pages
+	// TODO: test remember me checkbox
+})
+
+describe.skip('Create Account', () => {
+	beforeEach(() => {
+		cy.cleanUpDatabase()
+	})
+
+	it('a user can create an account and be onboarded', () => {
+		throw new Error('I have no idea how a user should be onboarded')
 	})
 })

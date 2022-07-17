@@ -1,17 +1,25 @@
 import bcrypt from 'bcryptjs'
 import { vi } from 'vitest'
 import { prisma } from '~/lib/db.server'
+import type { Organization } from '~/models/organization.server'
+import { createOrganization } from '~/models/organization.server'
 import {
 	createUser,
 	deleteUserByEmail,
 	getUserByEmail,
 	getUserById,
 	verifyLogin,
-} from '../user.server'
+} from '~/models/user.server'
 
 vi.mock('bcryptjs', async () => {
 	const actual = await vi.importActual<{ default: typeof bcrypt }>('bcryptjs')
 	return { __esModule: true, default: { ...actual.default, compare: vi.fn() } }
+})
+
+vi.mock('~/models/organization.server', () => {
+	return {
+		createOrganization: vi.fn(),
+	}
 })
 
 afterEach(() => {
@@ -41,23 +49,44 @@ describe('getUserByEmail', () => {
 })
 
 describe('createUser', () => {
-	it('given args as a dictionary, creates a user', async () => {
-		const args = {
-			firstName: 'Rumpel',
-			lastName: 'Stiltskin',
-			email: 'rumpel@example.com',
-			password: '1234asdf',
-		}
-
-		const spy = vi
+	const args = {
+		firstName: 'Rumpel',
+		lastName: 'Stiltskin',
+		email: 'rumpel@example.com',
+		password: '1234asdf',
+	}
+	it('given args as a dictionary, creates a user with an organization', async () => {
+		const userCreateSpy = vi
 			.spyOn(prisma.user, 'create')
 			.mockResolvedValueOnce('foo' as any)
 
+		const orgCreateSpy = vi
+			.mocked(createOrganization)
+			.mockResolvedValueOnce({ id: 'returned-org-id' } as any)
+
 		expect(await createUser(args)).toEqual('foo')
-		expect(spy).toHaveBeenCalledWith({
+
+		expect(orgCreateSpy).toHaveBeenCalledWith("Rumpel Stiltskin's Family")
+		expect(userCreateSpy).toHaveBeenCalledWith({
 			data: {
 				...args,
 				password: expect.stringContaining('$2a'), // should be a bcrypt hashed password
+				organizationId: 'returned-org-id',
+			},
+		})
+	})
+
+	it('given an existing organization, attaches user to that org', async () => {
+		const userCreateSpy = vi
+			.spyOn(prisma.user, 'create')
+			.mockResolvedValueOnce('foo' as any)
+
+		expect(await createUser(args, { id: '123' } as Organization)).toEqual('foo')
+		expect(userCreateSpy).toHaveBeenCalledWith({
+			data: {
+				...args,
+				password: expect.stringContaining('$2a'), // should be a bcrypt hashed password
+				organizationId: '123',
 			},
 		})
 	})
