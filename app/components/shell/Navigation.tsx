@@ -51,6 +51,11 @@ const navigationLinks: NavigationLinksSpec = {
 	],
 	account_loggedin: [
 		{
+			to: '/dashboard',
+			styles: { desktop: mainNavLinkStyles, mobile: mobileNavLinkStyles },
+			text: 'Dashboard',
+		},
+		{
 			to: '/logout',
 			styles: { desktop: mainNavLinkStyles, mobile: mobileNavLinkStyles },
 			text: 'Log Out',

@@ -48,14 +48,8 @@ export default function App() {
 				<Meta />
 				<Links />
 			</head>
-			<body className="h-full">
-				<main className="flex h-full flex-col bg-white">
-					<SiteNavigation />
-					<div className="flex-1">
-						<Outlet />
-					</div>
-					<SiteFooter />
-				</main>
+			<body className="flex h-full flex-col">
+				<Outlet />
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />

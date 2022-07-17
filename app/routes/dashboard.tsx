@@ -1,6 +1,8 @@
+import { Outlet } from '@remix-run/react'
 import type { LoaderFunction } from '@remix-run/server-runtime'
+import { DashboardNavigation } from '~/components/dashboard/DashboardNavigation'
+import { SiteFooter } from '~/components/shell/SiteFooter'
 import { requireUser } from '~/lib/session.server'
-import { useUser } from '~/lib/utils'
 
 export const loader: LoaderFunction = async ({ request }) => {
 	await requireUser(request)
@@ -8,7 +10,13 @@ export const loader: LoaderFunction = async ({ request }) => {
 }
 
 export default function Dashboard() {
-	const user = useUser()
-
-	return <h1>Welcome to your dashboard, {user.firstName}</h1>
+	return (
+		<>
+			<DashboardNavigation />
+			<div className="flex-1 bg-slate-100">
+				<Outlet />
+			</div>
+			<SiteFooter />
+		</>
+	)
 }
