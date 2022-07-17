@@ -65,3 +65,13 @@ export function mapZodError<T extends Record<string, unknown>>(
 		{ errors: {} } as SchemaErrorDefinition<T>
 	)
 }
+
+export type SchemaValidationResponse<T extends z.AnyZodObject> =
+	| {
+			state: 'error'
+			error: SchemaErrorDefinition<z.input<T>>
+	  }
+	| {
+			state: 'success'
+			data: z.output<T>
+	  }
