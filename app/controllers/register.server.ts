@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import type { SchemaValidationResponse } from '~/lib/schema'
 import { formError, mapZodError } from '~/lib/schema'
-import { validateEmail } from '~/lib/utils'
+import { omitKeys, validateEmail } from '~/lib/utils'
 import { createUser, getUserByEmail } from '~/models/user.server'
 
 const PASSWORD_MIN_LENGTH = 8
@@ -68,5 +68,5 @@ export async function validateRegisterForm(
 export async function onSuccessRegisterFormValidation(
 	request: z.output<typeof registerFormSchema>
 ) {
-	return createUser(request)
+	return createUser(omitKeys(request, 'confirmPassword'))
 }

@@ -19,7 +19,6 @@ import {
 } from '~/controllers/register.server'
 
 import { createUserSession, getUserId } from '~/lib/session.server'
-
 import { safeRedirect } from '~/lib/utils'
 
 export const loader: LoaderFunction = async ({ request }) => {
@@ -35,7 +34,7 @@ type ActionData = Extract<
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
-	const redirectTo = safeRedirect(formData.get('redirectTo'), '/')
+	const redirectTo = safeRedirect(formData.get('redirectTo'), '/dashboard')
 
 	const validationResult = await validateRegisterForm(
 		Object.fromEntries(formData.entries())
@@ -61,10 +60,27 @@ export const meta: MetaFunction = () => {
 	}
 }
 
+/**
+ * Naively validates that the response from the server matches a kind of
+ * response that we can handle.  Eventually, ideally we'd use something like zod
+ * to be more explicit about this.
+ */
+function isActionDataValid(actionData: ActionData | undefined): boolean {
+	if (actionData === undefined) {
+		return true
+	}
+
+	if (actionData.errors) {
+		return true
+	}
+
+	return false
+}
+
 export default function CreateAccount() {
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo') ?? undefined
-	const actionData = useActionData() as ActionData
+	const actionData = useActionData<ActionData>()
 	const emailRef = React.useRef<HTMLInputElement>(null)
 	const passwordRef = React.useRef<HTMLInputElement>(null)
 
@@ -75,6 +91,8 @@ export default function CreateAccount() {
 			passwordRef.current?.focus()
 		}
 	}, [actionData])
+
+	const unprocessableResponseError = !isActionDataValid(actionData)
 
 	return (
 		<div className="flex min-h-full flex-col justify-center bg-gray-50 py-8">
@@ -103,6 +121,7 @@ export default function CreateAccount() {
 						labelText="First Name"
 						autoFocus
 						type="text"
+						required
 						error={actionData?.errors?.firstName}
 					/>
 
@@ -110,6 +129,7 @@ export default function CreateAccount() {
 						name="lastName"
 						labelText="Last Name"
 						type="text"
+						required
 						error={actionData?.errors?.lastName}
 					/>
 
@@ -118,6 +138,7 @@ export default function CreateAccount() {
 						labelText="Email address"
 						autoComplete="email"
 						type="email"
+						required
 						error={actionData?.errors?.email}
 					/>
 
@@ -125,6 +146,7 @@ export default function CreateAccount() {
 						name="password"
 						labelText="Password"
 						type="password"
+						required
 						error={actionData?.errors?.password}
 					/>
 
@@ -132,10 +154,18 @@ export default function CreateAccount() {
 						name="confirmPassword"
 						labelText="Confirm Password"
 						type="password"
+						required
 						error={actionData?.errors?.confirmPassword}
 					/>
 
 					<input type="hidden" name="redirectTo" value={redirectTo} />
+					{unprocessableResponseError ? (
+						<div className="mt-1 text-sm text-red-700">
+							The server returned an unprocessable response. This could mean
+							that the server is down, but it probably means that you found a
+							bug.
+						</div>
+					) : null}
 					<StyledAuthSubmitButton>Create Account</StyledAuthSubmitButton>
 				</StyledAuthForm>
 			</div>

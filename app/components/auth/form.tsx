@@ -28,7 +28,7 @@ export function StyledAuthSubmitButton({
 type StyledAuthInputProps = {
 	autoComplete?: string
 	autoFocus?: boolean
-	error?: string
+	error: string | undefined
 	labelText: string
 	name: string
 	required?: boolean

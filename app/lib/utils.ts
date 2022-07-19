@@ -69,3 +69,19 @@ export function useUser(): User {
 export function validateEmail(email: unknown): email is string {
 	return typeof email === 'string' && email.length > 3 && email.includes('@')
 }
+
+export function omitKeys<
+	T extends Record<string, unknown>,
+	K extends Extract<keyof T, string>
+>(obj: T, ...keys: K[]): Omit<T, K> {
+	return Object.entries(obj).reduce((acc, [key, value]) => {
+		// safety: I don't know how to do this, but somehow I want to tell
+		// Typescript that K _can't_ actually be instantiated with a subtype of
+		// string.
+		if ((keys as string[]).indexOf(key) !== -1) {
+			return acc
+		}
+		acc[key as string] = value
+		return acc
+	}, {} as Record<string, unknown>) as Omit<T, K>
+}
