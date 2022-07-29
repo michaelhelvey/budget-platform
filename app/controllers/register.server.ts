@@ -1,27 +1,13 @@
 import { z } from 'zod'
+import { config, nameField } from '~/lib/config'
 import type { SchemaValidationResponse } from '~/lib/schema'
 import { formError, mapZodError } from '~/lib/schema'
 import { omitKeys, validateEmail } from '~/lib/utils'
 import { createUser, getUserByEmail } from '~/models/user.server'
 
-const PASSWORD_MIN_LENGTH = 8
-const NAME_MAX_LEN = 50
-const NAME_MIN_LEN = 1
-
-const nameField = z
-	.string()
-	.max(
-		NAME_MAX_LEN,
-		`Provided value is too long (max ${NAME_MAX_LEN} character(s))`
-	)
-	.min(
-		NAME_MIN_LEN,
-		`Provided value is too short (min ${NAME_MIN_LEN} character(s))`
-	)
-
 const passwordField = z
 	.string()
-	.min(8, `Password must be at least ${PASSWORD_MIN_LENGTH} characters`)
+	.min(8, `Password must be at least ${config.passwordMinLength} characters`)
 
 const registerFormSchema = z.object({
 	firstName: nameField,

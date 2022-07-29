@@ -24,7 +24,7 @@ export async function getSession(request: Request) {
 	return sessionStorage.getSession(cookie)
 }
 
-export async function getUserId(
+export async function getMaybeUserId(
 	request: Request
 ): Promise<User['id'] | undefined> {
 	const session = await getSession(request)
@@ -32,8 +32,17 @@ export async function getUserId(
 	return userId
 }
 
+export async function getUserId(request: Request) {
+	const maybeUserId = await getMaybeUserId(request)
+	if (!maybeUserId) {
+		throw await logout(request)
+	}
+
+	return maybeUserId
+}
+
 export async function getUser(request: Request) {
-	const userId = await getUserId(request)
+	const userId = await getMaybeUserId(request)
 	if (userId === undefined) return null
 
 	const user = await getUserById(userId)
@@ -46,7 +55,7 @@ export async function requireUserId(
 	request: Request,
 	redirectTo: string = new URL(request.url).pathname
 ) {
-	const userId = await getUserId(request)
+	const userId = await getMaybeUserId(request)
 	if (!userId) {
 		const searchParams = new URLSearchParams([['redirectTo', redirectTo]])
 		throw redirect(`/login?${searchParams}`)

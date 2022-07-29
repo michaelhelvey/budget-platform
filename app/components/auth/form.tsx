@@ -1,24 +1,37 @@
+import type { FormProps } from '@remix-run/react';
 import { Form } from '@remix-run/react'
 import React from 'react'
 
-export function StyledAuthForm({ children }: React.PropsWithChildren<unknown>) {
+export const StyledAuthForm = React.forwardRef<
+	HTMLFormElement,
+	React.PropsWithChildren<FormProps>
+>(({ children, ...rest }, ref) => {
 	return (
 		<Form
 			method="post"
 			className="shadw-sm mt-6 space-y-6 rounded-lg border border-slate-300 bg-white p-8 md:p-10"
+			ref={ref}
+			{...rest}
 		>
 			{children}
 		</Form>
 	)
-}
+})
+StyledAuthForm.displayName = 'StyledAuthForm'
 
+type ButtonProps = React.DetailedHTMLProps<
+	React.ButtonHTMLAttributes<HTMLButtonElement>,
+	HTMLButtonElement
+>
 export function StyledAuthSubmitButton({
 	children,
-}: React.PropsWithChildren<unknown>) {
+	...rest
+}: React.PropsWithChildren<ButtonProps>) {
 	return (
 		<button
 			type="submit"
 			className="w-full rounded-md bg-blue-700 py-2 px-4 text-sm text-white hover:bg-blue-700 focus:bg-blue-600"
+			{...rest}
 		>
 			{children}
 		</button>

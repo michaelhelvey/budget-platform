@@ -66,6 +66,13 @@ export function mapZodError<T extends Record<string, unknown>>(
 	)
 }
 
+export function extractErrorForField<T extends Record<string, unknown>>(
+	error: SchemaErrorDefinition<T>,
+	field: keyof T
+) {
+	return error.errors[field]
+}
+
 export type SchemaValidationResponse<T extends z.AnyZodObject> =
 	| {
 			state: 'error'
