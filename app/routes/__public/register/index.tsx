@@ -33,6 +33,7 @@ type ActionData = Extract<
 
 export const action: ActionFunction = async ({ request }) => {
 	const formData = await request.formData()
+
 	const redirectTo = safeRedirect(
 		formData.get('redirectTo'),
 		'/register/invite-users'
